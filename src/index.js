@@ -1,28 +1,47 @@
 import React, { Component } from 'react';
 import { render } from 'react-dom';
-import axios from 'axios';
+import { Provider, connect } from 'react-redux';
+import store, { loadTests } from './store';
 
-class App extends Component{
+
+class _App extends Component{
   constructor(){
     super();
     this.state = {
-      tests: [],
-      loading: true
+      search: ''
     };
+    this.onChange = this.onChange.bind(this);
+    this.onSave = this.onSave.bind(this);
   }
-  async componentDidMount(){
-    this.setState({
-      tests: (await axios.get('/api/tests')).data,
-      loading: false
-    });
 
+  componentDidMount(){
+    this.props.bootstrap();
   }
+
+  onChange(ev){
+    const change = {};
+    change[ev.target.name] = ev.target.value;
+    this.setState(change);
+    console.log(this.state.search);
+  }
+  
+  onSave(ev){
+    ev.preventDefault();
+    if (this.state.search)
+    console.log(this.state.search)   
+}
+
   render(){
-    const { tests, loading } = this.state;
-    if(loading){
-      return '....loading';
+    let { tests } = this.props;
+    const { onChange, onSave } = this;
+    const { search } = this.state;
+    console.log(tests);
+    if( search !== ''){
+      tests = tests.filter((_, idx)=> idx === search*1)
     }
+
     return (
+        <div>
         <table>
               <thead>
                     <tr>
@@ -61,11 +80,30 @@ class App extends Component{
             
         </tbody>
       </table>
+          <form onSubmit = { onSave }>
+            Search
+            <input name='search' value={ search } onChange = { onChange }/>
+          </form>
+      </div>
     );
   }
 }
 
-render(<App />, document.querySelector('#root'));
+const mapStateToProps = (state) => {
+  return state;
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    bootstrap: ()=> {
+      dispatch(loadTests());
+    }
+  };
+}
+
+const App = connect(mapStateToProps, mapDispatchToProps)(_App);
+
+render(<Provider store = {store}><App /></Provider>, document.querySelector('#root'));
 
 
 

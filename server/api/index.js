@@ -1,8 +1,4 @@
-// THIS SHOULD WORK - it can be cleaned up and such but should work for
-//  my porpuses
-
-//this could have some sort of route thing so we did not need to say api or 
-// some such not entirely sure need to review
+//as this get's bigger you can seperate things out more
 const express = require('express');
 const { static } = express;
 const path = require('path');
