@@ -14,6 +14,7 @@
   "license": "ISC",
   "dependencies": {
     "@material-ui/core": "^4.11.3",
+    "@material-ui/data-grid": "^4.0.0-alpha.20",
     "express": "^4.17.1",
     "pg": "^8.5.1",
     "sequelize": "^6.5.0"
