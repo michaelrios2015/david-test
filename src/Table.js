@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { loadTests } from './store';
+import { loadData } from './store';
 
 
 class TableHomeMade extends Component{
@@ -16,6 +16,7 @@ class TableHomeMade extends Component{
       
         componentDidMount(){
           this.props.bootstrap();
+          // console.log(this.props)
        
         }
       
@@ -34,54 +35,67 @@ class TableHomeMade extends Component{
 
 
 render(){
-    let { tests } = this.props;
+    let { data } = this.props;
     const { onChange, onSave } = this;
     const { searchA, searchB } = this.state;
-    // console.log(tests);
-    // console.log(searchA);
-    // console.log(searchB);
+
+    // this works but need a drop down menu at least 
     if( searchA !== ''){
-      tests = tests.filter((item)=> item.columnA === searchA*1)
+      data = data.filter((item)=> item.Cusip.includes(searchA));
     }
     if( searchB !== ''){
-        tests = tests.filter((item)=> item.columnB === searchB*1)
+      data = data.filter((item)=> item.PoolName.includes(searchB));
     }
-    // if( searchA !== '' && searchB !== ''){
-    //     tests = tests.filter((item)=> item.columnA === searchA*1 && item.columnB === searchB*1)
-    // }
+
     return(
         <div>
           
         <table>
               <thead>
                     <tr>
-                        <th>columnA</th>
-                        <th>columnB</th>
-                        <th>columnC</th>
-                        <th>columnD</th>
-                        <th>columnE</th>
+                        <th>Cusip</th>
+                        <th>Pool Name</th>
+                        <th>Type</th>
+                        <th>Month</th>
+                        <th>C.F.</th>
+                        <th>Coupon</th>
+                        <th>GWAC</th>
+                        <th>WALA</th>
+                        <th>WAM</th>
                     </tr>
                 </thead>
             <tbody>
                   
                     {
-            tests.map( test => { 
+            data.map( item => { 
                 return (
-                    <tr key={ test.id }> 
-                        <td key={ test.id + 1} >
-                            { test.columnA }
+                    <tr key={ item.id }> 
+                        <td key={ item.id + 1} >
+                            { item.Cusip }
                         </td>
-                        <td key={ test.id + 2 }>
-                            { test.columnB }    
+                        <td key={ item.id + 2 }>
+                            { item.PoolName }    
                         </td>
-                        <td key={ test.id + 3}>
-                            { test.columnC }    
+                        <td key={ item.id + 3}>
+                            { item.Type }    
                         </td>
-                        <td key={ test.id + 4}>
-                            { test.columnD }    
+                        <td key={ item.id + 4}>
+                            { item.Month }    
                         </td>
-                        <td key={ test.id + 5 }>
-                            { test.columnE }    
+                        <td key={ item.id + 5}>
+                            { item.CF }    
+                        </td>
+                        <td key={ item.id + 6}>
+                            { item.Coupon }    
+                        </td>
+                        <td key={ item.id + 7}>
+                            { item.GWAC }    
+                        </td>
+                        <td key={ item.id + 8}>
+                            { item.WALA }    
+                        </td>
+                        <td key={ item.id + 9}>
+                            { item.WAM }    
                         </td>
                     </tr>
                     );
@@ -110,7 +124,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
       bootstrap: ()=> {
-        dispatch(loadTests());
+        dispatch(loadData());
       }
     };
   }

@@ -2,7 +2,7 @@
 const express = require('express');
 const { static } = express;
 const path = require('path');
-const { db, models: { Test } } = require('../db');
+const { db, models: { Test, Data } } = require('../db');
 
 
 const app = express();
@@ -19,6 +19,15 @@ app.get('/', (req, res, next)=> res.sendFile(path.join(__dirname, '..', '..', 'i
 app.get('/api/tests', async(req, res, next)=> {
   try {
     res.send(await Test.findAll());
+  }
+  catch(ex){
+    next(ex);
+  }
+});
+
+app.get('/api/data', async(req, res, next)=> {
+  try {
+    res.send(await Data.findAll());
   }
   catch(ex){
     next(ex);
