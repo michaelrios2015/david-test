@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -21,8 +21,6 @@ const useStyles = makeStyles({
 function BasicTable({ rows }) {
   const [searchA, setSearchA ] = useState('');
   const [searchB, setSearchB ] = useState('');
-  useEffect(() => {
-  },[])
 
   function onSave(ev){
     ev.preventDefault();
@@ -39,10 +37,19 @@ function BasicTable({ rows }) {
   }
 
   const classes = useStyles();
+  
+  let cusips = [];
+  rows.forEach(item=>cusips.push(item.Cusip));
+  // seems to remove the duplicates
+  cusips = [...new Set(cusips)]
+  let poolNames = [];
+  rows.forEach(item=>poolNames.push(item.PoolName));
+  // seems to remove the duplicates
+  poolNames = [...new Set(poolNames)]
 
-  console.log(searchA)
+  // console.log(searchA)
   if (searchA !== ''){
-    rows = rows.filter((item)=> item.Cusip.includes(searchA));
+    rows = rows.filter((item)=> item.Cusip === searchA);
     // console.log(rows)
   }
   if (searchB !== ''){
@@ -52,12 +59,32 @@ function BasicTable({ rows }) {
 
   return (
     <div>
-        <form onSubmit = { onSave }>
-          Search Column A
-          <input name='searchA' value={ searchA } onChange = { onChange }/>
-          Search Column B
-          <input name='searchB' value={ searchB } onChange = { onChange }/>
-        </form>
+      Cusip:
+        <select name='searchA' value={ searchA } onChange = { onChange }>
+          <option value = ''>-- choose a Cusip</option>
+            {
+                cusips.map( (cusip, idx) => { 
+                        return (
+                            <option key={ idx } value = { cusip }>
+                                { cusip } 
+                            </option>
+                        );
+                    })
+            }
+        </select>
+        Pool Name:
+        <select name='searchB' value={ searchB } onChange = { onChange }>
+          <option value = ''>-- choose a Pool Name</option>
+          {
+              poolNames.map( (poolName, idx) => { 
+                      return (
+                          <option key={ idx } value = { poolName }>
+                              { poolName } 
+                          </option>
+                      );
+                  })
+          }
+      </select> 
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="simple table">
           <TableHead>

@@ -5,22 +5,6 @@ const fs = require("fs");
 const fastcsv = require("fast-csv");
 
 
-// can read in csv
-let stream = fs.createReadStream('data.csv');
-let csvData = [];
-let csvStream = fastcsv
-  .parse()
-  .on("data", function(data) {
-    // console.log('here')
-    csvData.push(data);
-  })
-  .on("end", async function() {
-    for (let i = 0; i < csvData.length; i++ ){
-      // console.log(csvData[i]);
-      await Test.create({ columnA: csvData[i][0], columnB: csvData[i][1], columnC: csvData[i][2], columnD: csvData[i][3], columnE: csvData[i][4] })
-    }
-  });
-
   let streamTwo = fs.createReadStream('15YP.csv');
   let csvDataTwo = [];
   let csvStreamTwo = fastcsv
@@ -39,19 +23,13 @@ let csvStream = fastcsv
 
   const syncAndSeed = async()=> {
     await db.sync({ force: true });
-  //   await Promise.all([
-  //     Test.create({ columnA: 1, columnB: 2, columnC: 3, columnD: 4, columnE: 5 }),
-  //     Test.create({ columnA: 6, columnB: 7, columnC: 8, columnD: 9, columnE: 10 }),
-  //     Test.create({ columnA: 11, columnB: 12, columnC: 13, columnD: 14, columnE: 15 }),
-  //  ]);
-   stream.pipe(csvStream);
+
+  //  stream.pipe(csvStream);
    streamTwo.pipe(csvStreamTwo);
 
   };
 
   
-// console.log('-----------------------------');
-// console.log(csvData);
 
 
 const init = async()=> {

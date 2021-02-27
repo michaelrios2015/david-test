@@ -11,7 +11,6 @@ class TableHomeMade extends Component{
             searchB: ''
           };
           this.onChange = this.onChange.bind(this);
-          this.onSave = this.onSave.bind(this);
         }
       
         componentDidMount(){
@@ -24,33 +23,60 @@ class TableHomeMade extends Component{
           const change = {};
           change[ev.target.name] = ev.target.value;
           this.setState(change);
-        //   console.log(this.state.search);
         }
-        
-        onSave(ev){
-          ev.preventDefault();
-        //   if (this.state.search){
-        //   console.log(this.state.search)}   
-      }
 
 
 render(){
     let { data } = this.props;
-    const { onChange, onSave } = this;
+    let cusips = [];
+    data.forEach(item=>cusips.push(item.Cusip));
+    // seems to remove the duplicates
+    cusips = [...new Set(cusips)]
+    let poolNames = [];
+    data.forEach(item=>poolNames.push(item.PoolName));
+    // seems to remove the duplicates
+    poolNames = [...new Set(poolNames)]
+    // console.log(cusips);
+    const { onChange } = this;
     const { searchA, searchB } = this.state;
 
     // this works but need a drop down menu at least 
     if( searchA !== ''){
-      data = data.filter((item)=> item.Cusip.includes(searchA));
+      data = data.filter((item)=> item.Cusip === searchA);
     }
     if( searchB !== ''){
       data = data.filter((item)=> item.PoolName.includes(searchB));
     }
 
     return(
-        <div>
-          
-        <table>
+        <div className = { 'myTable' }>
+          Cusip:
+          <select name='searchA' value={ searchA } onChange = { onChange }>
+                    <option value = ''>-- choose a Cusip</option>
+                    {
+                        cusips.map( (cusip, idx) => { 
+                                return (
+                                    <option key={ idx } value = { cusip }>
+                                        { cusip } 
+                                    </option>
+                                );
+                            })
+                    }
+          </select>
+          Pool Name:
+          <select name='searchB' value={ searchB } onChange = { onChange }>
+                    <option value = ''>-- choose a Pool Name</option>
+                    {
+                        poolNames.map( (poolName, idx) => { 
+                                return (
+                                    <option key={ idx } value = { poolName }>
+                                        { poolName } 
+                                    </option>
+                                );
+                            })
+                    }
+            </select>   
+        <table >
               <thead>
                     <tr>
                         <th>Cusip</th>
@@ -105,18 +131,12 @@ render(){
             
         </tbody>
       </table>
-          <form onSubmit = { onSave }>
-            Search Column A
-            <input name='searchA' value={ searchA } onChange = { onChange }/>
-            <br />
-            Search Column B
-            <input name='searchB' value={ searchB } onChange = { onChange }/>
-          </form>
+  
           </div>
-          
     )
+  }
 }
-}
+
 const mapStateToProps = (state) => {
     return state;
   }
@@ -130,8 +150,5 @@ const mapDispatchToProps = (dispatch) => {
   }
   
 export default connect(mapStateToProps, mapDispatchToProps)(TableHomeMade);
-
-
-
 
 

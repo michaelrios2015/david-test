@@ -3,19 +3,9 @@ import axios from 'axios';
 import thunk from 'redux-thunk';
 import logger from 'redux-logger';
 
-const LOAD_TESTS = 'LOAD_TESTS';
 const LOAD_ROWS = 'LOAD_ROWS';
 const LOAD_DATA = 'LOAD_DATA';
 
-
-//This was for my fake data ************************
-const testsReducer = (state = [], action) =>{
-    if (action.type === LOAD_TESTS){
-        state = action.tests
-    }
-
-    return state;
-}
 
 //segment of real data ************************
 const dataReducer = (state = [], action) =>{
@@ -37,7 +27,6 @@ const rowsReducer = (state = [], action) =>{
 
 // the reducer
 const reducer = combineReducers({
-    tests: testsReducer,
     rows: rowsReducer,
     data: dataReducer
 })
@@ -47,19 +36,6 @@ const store = createStore(reducer, applyMiddleware(thunk, logger));
 
 //TESTS THUNKS****************************************
 
-const _loadTests = (tests) =>{
-    return {
-        type: LOAD_TESTS,
-        tests
-    };
-};
-
-const loadTests = () =>{
-    return async(dispatch)=>{
-        const tests = (await axios.get('/api/tests')).data;
-        dispatch(_loadTests(tests));
-    }
-};
 
 const _loadData = (data) =>{
     return {
@@ -82,26 +58,6 @@ const _loadRows = (rows) =>{
     };
 };
 
-// needed for materials ui table
-// const loadRows = () =>{
-//     return async(dispatch)=>{
-//         const tests = (await axios.get('/api/tests')).data;
-//         // console.log()
-//         function createData(id, columnA, columnB, columnC, columnD, columnE) {
-//             return { id, columnA, columnB, columnC, columnD, columnE };
-//           }
-        
-//         const rows= [];
-          
-//         tests.forEach(item => {
-//             // console.log(item.id)
-//             rows.push(createData(item.id, item.columnA, item.columnB, item.columnC, item.columnD, item.columnE))
-//         });
-
-//         // console.log(rows); 
-//         dispatch(_loadRows(rows));
-//     }
-// };
 
 const loadRows = () =>{
     return async(dispatch)=>{
@@ -112,7 +68,8 @@ const loadRows = () =>{
           }
         
         const rows= [];
-          
+        
+        
         tests.forEach(item => {
             // console.log(item.id)
             rows.push(createData(item.id, item.Cusip, item.PoolName, item.Type, item.Month, item.CF, item.Coupon, item.GWAC, item.WALA, item.WAM))
@@ -125,4 +82,4 @@ const loadRows = () =>{
 
 
 export default store;
-export { loadTests, loadRows, loadData };
+export { loadRows, loadData };

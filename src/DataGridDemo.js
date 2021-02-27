@@ -1,4 +1,6 @@
 import * as React from 'react';
+// import  { useState } from 'react';
+import { connect } from 'react-redux';
 import { DataGrid } from '@material-ui/data-grid';
 
 const columns = [
@@ -6,35 +8,89 @@ const columns = [
   { field: 'PoolName', headerName: 'Pool Name', width: 130 },
   { field: 'Type', headerName: 'Type', width: 130 },
   { field: 'Month', headerName: 'Month', width: 130 },
-  { field: 'CF', headerName: 'CF', width: 130 },
-  { field: 'Coupon', headerName: 'Coupon', width: 130 },
-  {
-    field: 'age',
-    headerName: 'Age',
-    type: 'number',
-    width: 90,
-  },
+  { field: 'CF', headerName: 'CF', type: 'number', width: 90 },
+  { field: 'Coupon', headerName: 'Coupon', type: 'number', width: 130 },
+  { field: 'GWAC', headerName: 'GWAC', type: 'number', width: 130 },
+  { field: 'WALA', headerName: 'WALA', type: 'number', width: 130 },
+  { field: 'WAM', headerName: 'WAM', type: 'number', width: 90 },
   
 ];
+//very cool but the filter feature might be less useful than I thought
+function DataGridDemo({rows}) {
+  const [searchA, setSearchA ] = React.useState('');
+  const [searchB, setSearchB ] = React.useState('');
 
-const rows = [
-  { id: 1, Cusip: 'Snow', PoolName: 'Jon', Type: null, Month: null, CF: null, Coupon: null, age: 35 },
-  // { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
-  // { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
-  // { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
-  // { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-  // { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-  // { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-  // { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-  // { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
-];
+  function onSave(ev){
+    ev.preventDefault();
+  }
 
-// If I can figure out how to put my own data in this I should be good to go :) 
-//seem to only be able to filter one column at a time
-export default function DataGridDemo() {
+  function onChange(ev){
+    const change = {searchA, searchB};
+    change[ev.target.name] = ev.target.value;
+    
+    console.log(change)
+    setSearchA(change.searchA);
+
+    setSearchB(change.searchB);
+  }
+  
+  let cusips = [];
+  rows.forEach(item=>cusips.push(item.Cusip));
+  // seems to remove the duplicates
+  cusips = [...new Set(cusips)]
+  let poolNames = [];
+  rows.forEach(item=>poolNames.push(item.PoolName));
+  // seems to remove the duplicates
+  poolNames = [...new Set(poolNames)]
+
+  // console.log(searchA)
+  if (searchA !== ''){
+    rows = rows.filter((item)=> item.Cusip === searchA);
+    // console.log(rows)
+  }
+  if (searchB !== ''){
+    rows = rows.filter((item)=> item.PoolName.includes(searchB));
+    console.log(rows)
+  }
+
+
   return (
-    <div style={{ height: 400, width: '100%' }}>
-      <DataGrid rows={rows} columns={columns} pageSize={5} />
+    <div>    Cusip:
+    <select name='searchA' value={ searchA } onChange = { onChange }>
+      <option value = ''>-- choose a Cusip</option>
+        {
+            cusips.map( (cusip, idx) => { 
+                    return (
+                        <option key={ idx } value = { cusip }>
+                            { cusip } 
+                        </option>
+                    );
+                })
+        }
+    </select>
+    Pool Name:
+    <select name='searchB' value={ searchB } onChange = { onChange }>
+      <option value = ''>-- choose a Pool Name</option>
+      {
+          poolNames.map( (poolName, idx) => { 
+                  return (
+                      <option key={ idx } value = { poolName }>
+                          { poolName } 
+                      </option>
+                  );
+              })
+      }
+  </select> 
+    <div style={{ height: 1000, width: '100%' }}>
+      <DataGrid rows={rows} columns={columns} pageSize={15} />
     </div>
+    </div>
+
   );
 }
+
+const mapStateToProps = (state) => {
+  return state;
+}
+
+export default connect(mapStateToProps, null)(DataGridDemo);
