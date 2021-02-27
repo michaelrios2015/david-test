@@ -68,7 +68,7 @@ function BasicTable({ rows }) {
   // seems to remove the duplicates
   poolNames = [...new Set(poolNames)]
 
-  // console.log(searchA)
+  console.log(searchA)
   if (searchA !== ''){
     rows = rows.filter((item)=> item.Cusip === searchA);
     // console.log(rows)
