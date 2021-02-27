@@ -8,6 +8,12 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import TextField from '@material-ui/core/TextField';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+
+// need to clean up unused code getting some sort of error when first load does not break anything but not exactly good
+// Same thing about pagination and loading
+
 
 // lost the minwidth without this guy can probably be hard coded in somewhere 
 // changed so cusip and pool would not run together should be a better way
@@ -36,14 +42,29 @@ function BasicTable({ rows }) {
     setSearchB(change.searchB);
   }
 
+  function onChangeTwo(data){
+    // const change = {searchA, searchB};
+    // change[ev.target.name] = ev.target.value;
+    
+    // console.log(change)
+    setSearchA(data);
+
+    // setSearchB(change.searchB);
+  }
+
   const classes = useStyles();
   
   let cusips = [];
+  let cusipsTwo = [{cusip: ''}];
   rows.forEach(item=>cusips.push(item.Cusip));
+  rows.forEach(item=>cusipsTwo.push({cusip: item.Cusip}));
+  // console.log(cusipsTwo);
   // seems to remove the duplicates
   cusips = [...new Set(cusips)]
   let poolNames = [];
+  let poolNamesTwo = [];
   rows.forEach(item=>poolNames.push(item.PoolName));
+  rows.forEach(item=>poolNamesTwo.push({poolname: item.PoolName}));
   // seems to remove the duplicates
   poolNames = [...new Set(poolNames)]
 
@@ -59,32 +80,25 @@ function BasicTable({ rows }) {
 
   return (
     <div>
-      Cusip:
-        <select name='searchA' value={ searchA } onChange = { onChange }>
-          <option value = ''>-- choose a Cusip</option>
-            {
-                cusips.map( (cusip, idx) => { 
-                        return (
-                            <option key={ idx } value = { cusip }>
-                                { cusip } 
-                            </option>
-                        );
-                    })
-            }
-        </select>
-        Pool Name:
-        <select name='searchB' value={ searchB } onChange = { onChange }>
-          <option value = ''>-- choose a Pool Name</option>
-          {
-              poolNames.map( (poolName, idx) => { 
-                      return (
-                          <option key={ idx } value = { poolName }>
-                              { poolName } 
-                          </option>
-                      );
-                  })
-          }
-      </select> 
+              <Autocomplete
+              id="combo-box-demo"
+              options={cusipsTwo}
+              getOptionLabel={(option) => option.cusip}
+              style={{ width: 300 }}
+              // getOptionSelected={(value) => console.log(value)}
+              getOptionSelected={(option, value) => option.cusip === value.cusip && onChangeTwo(option.cusip)}
+              renderInput={(params) => <TextField  {...params} label="Cusips" variant="outlined" onClick = {(ev)=> !ev.target.value && setSearchA('')}  />}
+    />
+              <Autocomplete
+              id="combo-box-pool-names"
+              options={poolNamesTwo}
+              getOptionLabel={(option) => option.poolname}
+              style={{ width: 300 }}
+              getOptionSelected={(option, value) => option.poolname === value.poolname && setSearchB(option.poolname)}
+              renderInput={(params) => <TextField  {...params} label="Pool Names" variant="outlined" onClick = {(ev)=> !ev.target.value && setSearchB('')} />}
+    />
+
+
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="simple table">
           <TableHead>

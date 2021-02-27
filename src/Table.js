@@ -2,13 +2,16 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { loadData } from './store';
 
+//pagination would really help this simple front end is easy but not not be helpful since we are trying to speed it up
+//should there be three calls one that gets 100 items per page and keeps going one for each search of a cusip and poolname
+//probably  
 
 class TableHomeMade extends Component{
         constructor(){
           super();
           this.state = {
             searchA: '',
-            searchB: ''
+            searchB: '', 
           };
           this.onChange = this.onChange.bind(this);
         }
@@ -21,6 +24,7 @@ class TableHomeMade extends Component{
       
         onChange(ev){
           const change = {};
+          console.log(change);
           change[ev.target.name] = ev.target.value;
           this.setState(change);
         }
@@ -38,7 +42,7 @@ render(){
     poolNames = [...new Set(poolNames)]
     // console.log(cusips);
     const { onChange } = this;
-    const { searchA, searchB } = this.state;
+    const { searchA, searchB, val } = this.state;
 
     // this works but need a drop down menu at least 
     if( searchA !== ''){
@@ -50,6 +54,8 @@ render(){
 
     return(
         <div className = { 'myTable' }>
+          {/* It would be cool to make my own autocomplete which does not seem really hard but I don't have time right now
+          it would somehow have to combine a input box with a select box, I think and filter through options as you type */}
           Cusip:
           <select name='searchA' value={ searchA } onChange = { onChange }>
                     <option value = ''>-- choose a Cusip</option>
