@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -10,7 +10,6 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { on } from '../server/api';
 
 // need to clean up unused code getting some sort of error when first load does not break anything but not exactly good
 // Same thing about pagination and loading
@@ -29,30 +28,47 @@ function BasicTable({ rows }) {
   const [searchA, setSearchA ] = useState('');
   const [searchB, setSearchB ] = useState('');
 
+  function onSave(ev){
+    ev.preventDefault();
+  }
 
-  useEffect(() => {
+  function onChange(ev){
+    const change = {searchA, searchB};
+    change[ev.target.name] = ev.target.value;
     
-    setSearchA(searchA)
-    
-  },[searchA]);
+    console.log(change)
+    setSearchA(change.searchA);
 
+    setSearchB(change.searchB);
+  }
 
   function onChangeTwo(data){
-
+    // const change = {searchA, searchB};
+    // change[ev.target.name] = ev.target.value;
+    
+    // console.log(change)
     setSearchA(data);
 
+    // setSearchB(change.searchB);
   }
 
   const classes = useStyles();
   
-
+  let cusips = [];
   let cusipsTwo = [{cusip: ''}];
+  rows.forEach(item=>cusips.push(item.Cusip));
   rows.forEach(item=>cusipsTwo.push({cusip: item.Cusip}));
   // console.log(cusipsTwo);
+  // seems to remove the duplicates
+  cusips = [...new Set(cusips)]
+  let poolNames = [];
   let poolNamesTwo = [];
+  rows.forEach(item=>poolNames.push(item.PoolName));
   rows.forEach(item=>poolNamesTwo.push({poolname: item.PoolName}));
+  // seems to remove the duplicates
+  poolNames = [...new Set(poolNames)]
 
-  console.log(searchA)
+  // console.log(searchA)
   if (searchA !== ''){
     rows = rows.filter((item)=> item.Cusip === searchA);
     // console.log(rows)
@@ -70,17 +86,17 @@ function BasicTable({ rows }) {
               getOptionLabel={(option) => option.cusip}
               style={{ width: 300 }}
               // getOptionSelected={(value) => console.log(value)}
-              getOptionSelected={(option, value) => {if (option.cusip === value.cusip){ useEffect(option.cusip)}}}
+              getOptionSelected={(option, value) => option.cusip === value.cusip && onChangeTwo(option.cusip)}
               renderInput={(params) => <TextField  {...params} label="Cusips" variant="outlined" onClick = {(ev)=> !ev.target.value && setSearchA('')}  />}
     />
-               {/* <Autocomplete
+              <Autocomplete
               id="combo-box-pool-names"
               options={poolNamesTwo}
               getOptionLabel={(option) => option.poolname}
               style={{ width: 300 }}
               getOptionSelected={(option, value) => option.poolname === value.poolname && setSearchB(option.poolname)}
               renderInput={(params) => <TextField  {...params} label="Pool Names" variant="outlined" onClick = {(ev)=> !ev.target.value && setSearchB('')} />}
-    /> */}
+    />
 
 
       <TableContainer component={Paper}>
@@ -115,7 +131,7 @@ function BasicTable({ rows }) {
           </TableBody>
         </Table>
       </TableContainer>
-     </div>
+    </div>
   );
 }
 
