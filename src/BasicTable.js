@@ -82,21 +82,24 @@ function BasicTable({ rows }) {
     <div>
               <Autocomplete
               id="combo-box-demo"
-              options={cusipsTwo}
-              getOptionLabel={(option) => option.cusip}
+              options={cusips}
+              getOptionLabel={(option) => option}
               style={{ width: 300 }}
+              onChange={(event, value)=>setSearchA(value)}
+              // console.logs value
+              // onChange={(event, value)=>console.log(value.cusip)}
               // getOptionSelected={(value) => console.log(value)}
-              getOptionSelected={(option, value) => option.cusip === value.cusip && onChangeTwo(option.cusip)}
+              // getOptionSelected={(option, value) => option.cusip === value.cusip && onChangeTwo(option.cusip)}
               renderInput={(params) => <TextField  {...params} label="Cusips" variant="outlined" onClick = {(ev)=> !ev.target.value && setSearchA('')}  />}
     />
-              <Autocomplete
+              {/* <Autocomplete
               id="combo-box-pool-names"
               options={poolNamesTwo}
               getOptionLabel={(option) => option.poolname}
               style={{ width: 300 }}
               getOptionSelected={(option, value) => option.poolname === value.poolname && setSearchB(option.poolname)}
               renderInput={(params) => <TextField  {...params} label="Pool Names" variant="outlined" onClick = {(ev)=> !ev.target.value && setSearchB('')} />}
-    />
+    /> */}
 
 
       <TableContainer component={Paper}>
